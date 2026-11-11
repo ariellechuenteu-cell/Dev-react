@@ -6,40 +6,53 @@ import reportWebVitals from './reportWebVitals';
 
 import { createRoot } from 'react-dom/client'
 
-function Garage() {
-  return <h1>{mycar.show()}</h1>;
+
+/* //Methode map() permet de créer un nouveau tableau en appliquant une fonction à 
+chaque élément du tableau d'origine. Elle prend une fonction de rappel (callback)
+comme argument, qui est exécutée pour chaque élément du tableau. La fonction de
+rappel reçoit trois arguments : l'élément actuel, l'index de l'élément et le 
+tableau d'origine.*/
+const fruits = ['apple', 'banana', 'cherry', 'date', 'elderberry'];
+
+function FruitList() {
+  return (
+    <ul>
+      {fruits.map((fruit) => (
+        <li key={fruit}>{fruit}</li>
+      ))}
+    </ul>
+  );
+}
+//la methode map est aussi utilisee dans les composants React pour générer des listes d'éléments à partir de tableaux de données.
+const users = [
+  { id: 1, name: 'John', age: 30 },
+  { id: 2, name: 'Jane', age: 25 },
+  { id: 3, name: 'Bob', age: 35 }
+];
+
+function UserList() {
+  return (
+    <ul>
+      {users.map(user =>
+        <li key={user.id}>
+          {user.name} is {user.age} years old
+        </li>
+      )}
+    </ul>
+  );
 }
 
-// Creation d'une classe
-class Car {
-  constructor(name) {
-    this.brand = name;
-  }
-//Methode d'une classe
-  present() {
-    return 'I have a ' + this.brand;
-  }
+
+// la destructuration des composants react
+function Greeting({ name, age }) {
+  return <h1>Hello, {name}! You are {age} years old.</h1>;
 }
-
-//Heritage dans les classes
-class Model extends Car {
-  constructor(name, mod) {
-    super(name);
-    this.model = mod;
-  }
-  show() {
-      return this.present() + ', it is a ' + this.model
-  }
-}
-const mycar = new Model("Ford", "Mustang");
-mycar.show();
-
-
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Garage />
+    <FruitList />
+    <UserList />
+    <Greeting name="Alice" age={25} />
   </React.StrictMode>
 );
 
