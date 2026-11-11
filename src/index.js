@@ -6,66 +6,42 @@ import reportWebVitals from './reportWebVitals';
 
 import { createRoot } from 'react-dom/client'
 
-//utilisation de l'attribut className pour ajouter une classe CSS à un élément JSX
-function Car() {
+//creation de mon premier composant react
+function Composant() {
+  return <h1>Bonjour je suis un composant react</h1>
+}
+
+//creation de mon deuxieme composant react avec un argument props
+function Car(props) {
   return (
-    <h1 className="myclass">Hello World</h1>
+    <h2>I am a {props.color} Car!</h2>
   );
 }
 
-//utilisation d'une fonction fléchée pour créer un gestionnaire d'événements qui affiche une alerte lorsque le bouton est cliqué
-function MyCar() {
-  const myfunc = () => {
-    alert('Bonjour je suis arielle');
-  };
+
+//creation de mon troisieme composant react avec un autre composant a l'interieur
+function MyCar(props) {
   return (
-    <button onClick={myfunc}>Click me</button>
+    <h2>I am a {props.band} Car!</h2>
   );
 }
 
-//utilisation de l'attribut style pour ajouter des styles CSS en ligne à un élément JSX
-function StyledCar() {
-  const mystyles = {
-    color: "red",
-    fontSize: "20px",
-    backgroundColor: "lightyellow",
-  };
-
+function Garage() {
   return (
     <>
-      <h1 style={mystyles}>My car</h1>
+      <h1>Who lives in my Garage?</h1>
+      <MyCar band="Toyota" />
+      <MyCar band="Honda" />
     </>
   );
 }
 
-//utilisation d'une condition pour afficher un élément JSX différent en fonction de la valeur d'une variable
-function Fruit() {
-  const x = 5;
-  let y = "Apple";
-  if (x < 10) {
-    y = "Banana";
-  }
-
-  return (
-    <h1>{y}</h1>
-  );
-}
-
-//utilisation d'une expression ternaire
-function MyFruit() {
-  const x = 5;
-  return (
-    <h1>{(x) < 10 ? "Banana" : "Apple"}</h1>
-  );
-}
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <reactStrictMode>
-    <Car/>
-    <MyCar/>
-    <StyledCar/>
-    <Fruit/>
-    <MyFruit/>
+    <Composant />
+    <Car color="red" />
+    <Garage />
   </reactStrictMode>
 );
 
