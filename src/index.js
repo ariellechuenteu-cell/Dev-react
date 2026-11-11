@@ -6,25 +6,41 @@ import reportWebVitals from './reportWebVitals';
 
 import { createRoot } from 'react-dom/client'
 
-const myelement = (
-  <table>
-    <tr>
-      <th>Name</th>
-    </tr>
-    <tr>
-      <td>John</td>
-    </tr>
-    <tr>
-      <td>Elsa</td>
-    </tr>
-  </table>
-);
+function Garage() {
+  return <h1>{mycar.show()}</h1>;
+}
+
+// Creation d'une classe
+class Car {
+  constructor(name) {
+    this.brand = name;
+  }
+//Methode d'une classe
+  present() {
+    return 'I have a ' + this.brand;
+  }
+}
+
+//Heritage dans les classes
+class Model extends Car {
+  constructor(name, mod) {
+    super(name);
+    this.model = mod;
+  }
+  show() {
+      return this.present() + ', it is a ' + this.model
+  }
+}
+const mycar = new Model("Ford", "Mustang");
+mycar.show();
 
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  myelement
+  <React.StrictMode>
+    <Garage />
+  </React.StrictMode>
 );
 
 
