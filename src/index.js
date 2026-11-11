@@ -1,20 +1,30 @@
 import React from 'react';
-import { useState } from 'react';
-import { useEffect } from "react";
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-function Bonjour() {
-  return <h1>Bonjour</h1>;
-}
+import { createRoot } from 'react-dom/client'
+
+const myelement = (
+  <table>
+    <tr>
+      <th>Name</th>
+    </tr>
+    <tr>
+      <td>John</td>
+    </tr>
+    <tr>
+      <td>Elsa</td>
+    </tr>
+  </table>
+);
+
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <Bonjour />
-  </React.StrictMode>
+  myelement
 );
 
 
