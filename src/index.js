@@ -6,54 +6,62 @@ import reportWebVitals from './reportWebVitals';
 
 import { createRoot } from 'react-dom/client'
 
+//Utilisation de jsx pour créer un élément React
+const myElement = <h1>I Love JSX!</h1>;
 
-/* //Methode map() permet de créer un nouveau tableau en appliquant une fonction à 
-chaque élément du tableau d'origine. Elle prend une fonction de rappel (callback)
-comme argument, qui est exécutée pour chaque élément du tableau. La fonction de
-rappel reçoit trois arguments : l'élément actuel, l'index de l'élément et le 
-tableau d'origine.*/
-const fruits = ['apple', 'banana', 'cherry', 'date', 'elderberry'];
+//utilisation de jsx pour créer un élément React avec une expression
+const myText = <h1>React is {5 + 5} times better with JSX</h1>;
 
-function FruitList() {
+//Pour écrire du HTML sur plusieurs lignes, mettez le HTML entre parenthèses
+const myList = (
+  <ul>
+    <li>Apples</li>
+    <li>Bananas</li>
+    <li>Cherries</li>
+  </ul>
+);
+
+// pour ecrire du code html, mettez les dans un element de contenu parent, comme un div ou un section
+const myDiv = (
+  <div>
+    <p>I am a paragraph.</p>
+    <p>I am a paragraph too.</p>
+  </div>
+);
+
+//Au cas contraire on peut l'ecrire dans un fragment React, qui est un conteneur vide qui ne produit pas de noeud supplémentaire dans le DOM
+const myFragment = (
+  <>
+    <p>I am a paragraph.</p>
+    <p>I am a paragraph too.</p>
+  </>
+);
+
+//Les classes CSS sont appliquées en utilisant l'attribut className au lieu de class, car class est un mot réservé en JavaScript.
+const myClass = <h1 className="myclass">Hello World</h1>;
+
+// JSX dans les composants React
+function Car() {
+  const brand = "Ford";
+  const model = "Mustang";
   return (
-    <ul>
-      {fruits.map((fruit) => (
-        <li key={fruit}>{fruit}</li>
-      ))}
-    </ul>
+    <>
+      <h2>My Car</h2>
+      <p>It is a {brand} {model}.</p>
+    </>
   );
 }
-//la methode map est aussi utilisee dans les composants React pour générer des listes d'éléments à partir de tableaux de données.
-const users = [
-  { id: 1, name: 'John', age: 30 },
-  { id: 2, name: 'Jane', age: 25 },
-  { id: 3, name: 'Bob', age: 35 }
-];
 
-function UserList() {
-  return (
-    <ul>
-      {users.map(user =>
-        <li key={user.id}>
-          {user.name} is {user.age} years old
-        </li>
-      )}
-    </ul>
-  );
-}
-
-
-// la destructuration des composants react
-function Greeting({ name, age }) {
-  return <h1>Hello, {name}! You are {age} years old.</h1>;
-}
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <FruitList />
-    <UserList />
-    <Greeting name="Alice" age={25} />
-  </React.StrictMode>
+    <Car />,
+  myClass,
+    myFragment,
+    myDiv,
+    myList,
+    myText,
+    myElement,
+    
 );
 
 
