@@ -6,126 +6,91 @@ import reportWebVitals from './reportWebVitals';
 
 import { createRoot } from 'react-dom/client'
 
-//creation d'une fonction avec une propriete brand qui sera affichée dans le h2
-function Food(myobj) {
-  return (
-    <h2>je veux manger la {myobj.brand}!</h2>
+//Evenement React
+//Ajout d'evenements
+function Football() {
+  const shoot = () => {
+    alert("Great a short!");
+  }
+  return(
+    <button onClick={shoot}>Take a short</button>
   );
 }
 
 
-//creation d'une fonction avec plusieurs proprietes qui seront affichées dans le h2
-function Food2(myobj) {
-  return (
-    <h2>je veux manger la {myobj.brand} et boire le {myobj.drink}!</h2>
+//Argument de passage
+//pour passser un argumenta un gestionnaire d'evenements, utilisez une fonction de fleche
+function Handball() {
+  const shooter = (a) =>{
+    alert(a);
+  }
+  return(
+    <button onClick={() =>shooter("Goal")}>Take</button>
   );
 }
 
-//differents types de donnees
+//Objet d'evenement react
+function Volleyball(){
+  const shootest= (a,b) =>{
+    alert(b.type);
+  }
+  return(
+    <button onClick={(event) =>shootest("Goal", event)}>Take a shoot</button>
+  )
+}
 
-function Car(props) {
+//Les conditions react
+//La condition if
+function MissedGoal(){
+  return <h1>Missed</h1>;
+  
+}
+function MadeGoal(){
+  return <h1>Goal!</h1>;
+  
+}
+function Goal(props){
+  const isGoal = props.isGoal;
+  if (isGoal){
+    return <MadeGoal />;
+    
+  }
+  return <MissedGoal />;
+  
+}
+
+//Operateur logique &&: le cote droit sera rendu que si le cote gauche est vrai
+function Car(props){
   return(
     <>
-    <h2>The car is from {props.year}!</h2>
-    <h2>I am a {props.brand}!</h2>
+    {props.brand && <h1>My car is a {props.brand}! </h1>}
     </>
   );
+  
 }
-let x = "Ford";
 
-
-//les objets et les tableaux
-function MyCar(props) {
-  return (
+//operateur ternaire: condition? true : false
+//Revenons a l'exemple du debut
+function But(props){
+  const isGoals = props.isGoals;
+  return(
     <>
-      <h2>My favorite car is a {props.carinfo.name} {props.carinfo.model}!</h2>
-      <p>But it has to from {props.years[0]}, {props.years[1]}, or {props.years[2]}.</p>
+    {isGoals ? <MadeGoal /> : <MissedGoal /> }
     </>
   );
+  
 }
-
-let z = [1964, 1965, 1966];
-let y = {name: "Ford", model: "Mustang"};
-
-
-//Destructuration des props
-function Voiture({color}) {
-  return (
-    <h2>Ma voiture est {color}!</h2>
-  );
-}
-
-
-//on peut aussi detruire toutes les proprietes mais preciser quelle propriete s'affiche a l'interieur de la fonction 
-function House(props) {
-  const {brand, model} = props;
-  return (
-    <h2>I love my {brand} {model}!</h2>
-  );
-}
-
-
-//destructuration avec ...rest
-function House1({color, brand, ...rest}) {
-  return (
-    <h2>My {brand} {rest.model} is {color}!</h2>
-  );
-}
-
-
-//Enfant de react props
-function Son(props) {
-  return (
-    <div style={{background: 'lightgreen'}}>
-      <h2>Son</h2>
-      <div>{props.children}</div>
-    </div>
-  );
-}
-
-function Daughter(props) {
-  const {brand, model} = props;
-  return (
-    <div style={{background: 'lightblue'}}>
-      <h2>Daughter</h2>
-      <div>{props.children}</div>
-    </div>
-  );
-}
-
-function Parent() {
-  return (
-    <div>
-      <h1>My two Children</h1>
-      <Son>
-        <p>
-          This was written in the Parent component,
-          but displayed as a part of the Son component
-        </p>
-      </Son>
-      <Daughter>
-        <p>
-          This was written in the Parent component,
-          but displayed as a part of the Daughter component
-        </p>
-      </Daughter>
-    </div>
-  );
-}
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <reactStrictMode>
-    <Food brand="Pomme" />
-    <Food2 brand="Pomme" drink="Jus" />
-    <Car year={1969} />
-    <Car brand={x} />
-    <MyCar years={z} carinfo={y} />
-    <Voiture brand="Ford" model="Mustang" color="rouge" year={1969} />
-    <House brand="Luxe" model="Villa" color="green" />
-    <House1 brand="Luxe" model="Villa" color="red" year={1969} />
-    <Parent />
+    <Football />
+    <Handball />
+    <Volleyball />
+    <Goal isGoal={false} />
+    <Goal isGoal={true} />
+    <Car brand="Ford"/>
+    <But isGoals={false} />
   </reactStrictMode>
 );
 
