@@ -1,4 +1,5 @@
 import React from 'react';
+import {useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -6,54 +7,250 @@ import reportWebVitals from './reportWebVitals';
 
 import { createRoot } from 'react-dom/client'
 
-//Liste react: on affiche les listes avec la methode map()
-function MyCars(){
-  const cars =['Ford', 'Bmw', 'Audi'];
+//Les formulaires react
+//Ajout des formulaires dans react
+function MyForm(){
   return(
-    <>
-    <h1>My cars:</h1>
-    <ul>
-      {cars.map((car)=> <li>I am a {car}</li>)}
-    </ul>
-    </>
+    <form>
+      <label>Enter your name:
+        <input type="text" />
+      </label>
+    </form>
   );
   
 }
 
-//Cles dans les listes react
-function MesVoitures(){
-  const voitures = [{id:1001, brand:'Ford'}, {id:1002, brand:'BMW'}, {id:1003, brand:'Audi'}];
+
+//utilisation du hook useState pour gerer l'entree
+function MonFormulaire(){
+  //Déclarer une variable d’état pour contenir la valeur de l’entrée et une fonction pour la mettre à jour
+  const [name, setName]= useState("");
+
+  //Créer une fonction pour gérer l’événement de changement
+  function handleChange(e){
+    setName(e.target.value);
+    
+  }
   return(
-    <>
-    <h1>Mes voitures:</h1>
-    <ul>
-      {voitures.map((voiture) => <li key={voiture.id}>Je suis une{voiture.brand}</li>)}
-    </ul>
-    </>
+    //Définir la valeur du champ d’entrée à la variable d’état et à l’attribut onChange pour gérer l’événement de changement
+    <form>
+      <label>Enter your userName:
+        <input type="text" value={name} onChange={handleChange}/>
+      </label>
+      <p>Current value: {name}</p>
+    </form>
   );
   
 }
 
-//Utilisation de l'index du tableau comme cle(non recommande poue les listes dynamiques)
-function MesCamions(){
-  const camions = ['ford','BMW','Audi'];
+
+//Soumission des formulaires react
+function SubmitForm(){
+  const[name, setName]=useState("");
+
+  function handleChange(e){
+    setName(e.target.value);
+    
+  }
+
+  function handleSubmit(e){
+    e.preventDefault();
+    alert(name);
+    
+  }
+
   return(
-    <>
-    <h1>Mes camions:</h1>
-    <ul>
-      {camions.map((camion, index) =><li key={index}>Je suis un{camion}</li>)}
-    </ul>
-    </>
+    <form onSubmit={handleSubmit}>
+      <label>Entre ton nom complet:
+        <input type="text" value={name} onChange={handleChange} />
+      </label>
+      <input type="submit" />
+    </form>
   );
+  
 }
 
 
+//React form textarea
+function MyForm2(){
+  const[mytxt, setMytxt]=useState("");
+
+  function handleChange(e){
+    setMytxt(e.target.value);
+    
+  }
+  return(
+    <form>
+      <label>Write here:
+        <textarea value={mytxt} onChange={handleChange} />
+      </label>
+      <p>Current value:{mytxt}</p>
+    </form>
+  )
+  
+}
+
+
+//React form select
+function MyForm3(){
+  const [mycar, setMyCar]= useState("volvo");
+
+  const handleChange = (event) =>{
+    setMyCar(event.target.value);
+  }
+  return(
+    <form>
+      <select value={mycar} onChange={handleChange}>
+        <option value='ford'> ford</option>
+        <option value='volvo'>volvo</option>
+        <option value='audi'> audi</option>
+      </select>
+    </form>
+  )
+  
+}
+
+//Boutons radio
+function MyForm4(){
+  const [selectedFruit, setSelectedFruit] = useState('banana');
+
+  const handleChange = (event) =>{
+    setSelectedFruit(event.target.value);
+  };
+
+  const handleSubmit = (event) =>{
+    alert(`your favorite fruit is : ${selectedFruit}`);
+    event.prevaultDefault();
+  };
+
+  return(
+    <form onSubmit={handleSubmit}>
+      <p>Select your favorite fruit:</p>
+      <label>
+        <input type='radio'
+        name='fruit'
+        value='apple'
+        checked={selectedFruit === 'apple'}
+        onChange = {handleChange}
+        /> Apple
+      </label>
+      <br />
+      <label>
+        <input type='radio'
+        name='fruit'
+        value='banana'
+        checked={selectedFruit === 'banana'}
+        onChange={handleChange}
+        /> Banana
+      </label>
+      <br />
+      <label>
+        <input type='radio'
+        name='fruit'
+        value='cherry'
+        checked={selectedFruit === 'cherry'}
+        onChange={handleChange}
+        />Cherry
+      </label>
+      <br />
+      <button type="submit">Submit</button>
+    </form>
+  );
+  
+}
+
+
+//Case a cocher
+function MyForm5() {
+  const[inputs, setInputs] = useState({});
+
+  const handleChange = (e) =>{
+    const target =e.target;
+    const value = target.type === 'checked'? target.checked : target.value;
+    const name = target.name;
+    setInputs(values => ({...values, [name]: value}))
+  };
+
+  const handleSubmit = (event) =>{
+    let fillings ='';
+    if (inputs.tomato) fillings += 'tomato';
+    if (inputs.onion){
+      if (inputs.tomato) fillings += 'and';
+      fillings += 'onion';
+    }
+    if (fillings == '') fillings = 'no fillings';
+    alert(`${inputs.firstname} wats a burger with ${fillings}`);
+    event.preventDefault();
+      
+  };
+
+  return(
+    <form onSubmit ={handleSubmit}>
+      <label>My name is:
+        <input type='text'
+          name='firstname'
+          value={inputs.firstname}
+          onChange={handleChange}
+          />
+        </label>
+
+        <p>I want a burger with:</p>
+        <label>Tomato:
+          <input type='checkbox'
+          name='tomato'
+          checked={inputs.tomato}
+          onChange={handleChange}
+          />
+        </label>
+        <label>Onion
+          <input type='checkbox'
+          name='onion'
+          checked={inputs.onion}
+          onChange={handleChange}
+          />
+        </label>
+        <button type='submit'>Submit</button>
+    </form>
+  )
+}
+
+//Entree multiples
+function MyForm6(){
+  const [inputs, setInputs] = useState({});
+
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setInputs(values => ({...values, [name]: value}))
+  }
+
+  return (
+    <form>
+      <label>First name:
+      <input 
+        type="text" 
+        name="firstname" 
+        value={inputs.firstname} 
+        onChange={handleChange}
+      />
+      </label>
+      <label>Last name:
+        <input 
+          type="text" 
+          name="lastname" 
+          value={inputs.lastname} 
+          onChange={handleChange}
+        />
+      </label>
+      <p>Current values: {inputs.firstname} {inputs.lastname}</p>
+    </form>
+  )
+}
+      
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <reactStrictMode>
-    <MyCars />
-    <MesVoitures />
-    <MesCamions />
+    <MyForm6 />
   </reactStrictMode>
 );
 
