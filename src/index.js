@@ -6,91 +6,54 @@ import reportWebVitals from './reportWebVitals';
 
 import { createRoot } from 'react-dom/client'
 
-//Evenement React
-//Ajout d'evenements
-function Football() {
-  const shoot = () => {
-    alert("Great a short!");
-  }
-  return(
-    <button onClick={shoot}>Take a short</button>
-  );
-}
-
-
-//Argument de passage
-//pour passser un argumenta un gestionnaire d'evenements, utilisez une fonction de fleche
-function Handball() {
-  const shooter = (a) =>{
-    alert(a);
-  }
-  return(
-    <button onClick={() =>shooter("Goal")}>Take</button>
-  );
-}
-
-//Objet d'evenement react
-function Volleyball(){
-  const shootest= (a,b) =>{
-    alert(b.type);
-  }
-  return(
-    <button onClick={(event) =>shootest("Goal", event)}>Take a shoot</button>
-  )
-}
-
-//Les conditions react
-//La condition if
-function MissedGoal(){
-  return <h1>Missed</h1>;
-  
-}
-function MadeGoal(){
-  return <h1>Goal!</h1>;
-  
-}
-function Goal(props){
-  const isGoal = props.isGoal;
-  if (isGoal){
-    return <MadeGoal />;
-    
-  }
-  return <MissedGoal />;
-  
-}
-
-//Operateur logique &&: le cote droit sera rendu que si le cote gauche est vrai
-function Car(props){
+//Liste react: on affiche les listes avec la methode map()
+function MyCars(){
+  const cars =['Ford', 'Bmw', 'Audi'];
   return(
     <>
-    {props.brand && <h1>My car is a {props.brand}! </h1>}
+    <h1>My cars:</h1>
+    <ul>
+      {cars.map((car)=> <li>I am a {car}</li>)}
+    </ul>
     </>
   );
   
 }
 
-//operateur ternaire: condition? true : false
-//Revenons a l'exemple du debut
-function But(props){
-  const isGoals = props.isGoals;
+//Cles dans les listes react
+function MesVoitures(){
+  const voitures = [{id:1001, brand:'Ford'}, {id:1002, brand:'BMW'}, {id:1003, brand:'Audi'}];
   return(
     <>
-    {isGoals ? <MadeGoal /> : <MissedGoal /> }
+    <h1>Mes voitures:</h1>
+    <ul>
+      {voitures.map((voiture) => <li key={voiture.id}>Je suis une{voiture.brand}</li>)}
+    </ul>
     </>
   );
   
 }
+
+//Utilisation de l'index du tableau comme cle(non recommande poue les listes dynamiques)
+function MesCamions(){
+  const camions = ['ford','BMW','Audi'];
+  return(
+    <>
+    <h1>Mes camions:</h1>
+    <ul>
+      {camions.map((camion, index) =><li key={index}>Je suis un{camion}</li>)}
+    </ul>
+    </>
+  );
+}
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <reactStrictMode>
-    <Football />
-    <Handball />
-    <Volleyball />
-    <Goal isGoal={false} />
-    <Goal isGoal={true} />
-    <Car brand="Ford"/>
-    <But isGoals={false} />
+    <MyCars />
+    <MesVoitures />
+    <MesCamions />
   </reactStrictMode>
 );
 
