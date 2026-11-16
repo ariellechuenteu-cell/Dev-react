@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState } from 'react';
+import { useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -7,74 +8,42 @@ import reportWebVitals from './reportWebVitals';
 
 import { createRoot } from 'react-dom/client';
 
+//Exemple de minuteur avec le hook useEffect
+function Timer() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setCount((count) => count + 1);
+    }, 1000);
+    return () => clearTimeout();
+  }, []);
+
+  return <p>I have rendered {count} times</p>;
+}
+
 function Counter() {
   const [count, setCount] = useState(0);
+  const [calculation, setCalculation] = useState(0);
+
+  useEffect(() => {
+    setCalculation(() => count * 2);
+  }, [count]); // <- add the count variable here
+
   return (
     <>
-      <h1>Mon compteur</h1>
-      <p>{count}</p>
-      <button onClick={() => setCount(count + 1)}>Appuyer</button>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount((c) => c + 1)}>+</button>
+      <p>Calculation: {calculation}</p>
     </>
-  )
-}
-
-/* function MiniQuiz() {
-  const [score, setScore] = useState(0);
-  const [questionIndex, setQuestionIndex] = useState(0);
-
-  const questions = [
-    {
-      question: "Quelle est la capitale de la France ?",
-      options: ["Paris", "Londres", "Berlin", "Madrid"],
-      answer: "Paris"
-    },
-    {
-      question: "Quelle est la capitale de l'Allemagne ?",
-      options: ["Berlin", "Vienne", "Rome", "Madrid"],
-      answer: "Berlin"
-    },
-    {
-      question: "Quelle est la capitale de l'Espagne ?",
-      options: ["Madrid", "Barcelone", "Valence", "Seville"],
-      answer: "Madrid"
-    }
-  ];
-
-  const currentQuestion = questions[questionIndex];
-
-  const handleAnswer = (selectedAnswer) => {
-    if (selectedAnswer === currentQuestion.answer) {
-      setScore(score + 1);
-    }
-    if (questionIndex < questions.length - 1) {
-      setQuestionIndex(questionIndex + 1);
-    } else {
-      // Quiz finished
-    }
-  };
-
-  return (
-    <div>
-      <h1>Mini Quiz</h1>
-      <p>Score: {score}</p>
-      <p>Question {questionIndex + 1}/{questions.length}</p>
-      <h2>{currentQuestion.question}</h2>
-      <ul>
-        {currentQuestion.options.map((option, index) => (
-          <li key={index}>
-            <button onClick={() => handleAnswer(option)}>
-              {option}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }
- */
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <reactStrictMode>
+    <Timer />
     <Counter />
   </reactStrictMode>
 );
