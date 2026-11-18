@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { createContext, useState, useRef, useEffect, useCallback, useMemo, useContext, useReducer, memo } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -7,202 +7,227 @@ import reportWebVitals from './reportWebVitals';
 
 import { createRoot } from 'react-dom/client';
 
-function Apps() {
-  const [inputValue, setInputvalue] = useState('');
-  const count = useRef(0);
+//----------------------------HOOK USESTATE----------------------
+
+//Exemple sans useState: la variable change mais react ne sait pas qu'il doit reafficher, donc la variable reste toujours a 0
+function Compteur() {
+  let compteur = 0; // remis à 0 à chaque affichage !
+
+  return <button onClick={() => compteur++}>Cliqué {compteur} fois</button>;
+}
+
+//Exemple  avec useState: quand o appelle setCompteur(), React memorise la nouvelle valeur et reaffiche le composant
+
+function CompteurUseState() {
+  const [compteur, setCompteur] = useState(0);
+
+  return (
+    <button onClick={() => setCompteur(compteur + 1)}>
+      Cliqué {compteur} fois
+    </button>
+  );
+}
+
+//Autre exemple avec un champ de texte
+function Bonjour() {
+  const [nom, setNom] = useState("");
+
+  return (
+    <>
+      <input type='text' value={nom} onChange={(e) => setNom(e.target.value)} />
+      <p>Bonjour {nom} !</p>
+    </>
+  );
+}
+
+
+//---------------------------HOOK USEEFFECT--------------------
+
+function Titre() {
+  const [compteur, setCompteur] = useState(0);
 
   useEffect(() => {
-    count.current = count.current + 1;
-  });
+    document.title = `Clique ${compteur} fois`;
+  }, [compteur]);// [compteur] = Premier affichage, puis a chaque changement du compteur
+
+  return <button onClick={() => setCompteur(compteur + 1)}> +1 </button>
+}
+
+// exmple classique, charger les donnees au demarrage
+function ListeUsers() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((res) => res.json())
+      .then((data) => setUsers(data));
+  }, []); //[] = en une seule fois
+
+
+  return (
+    <ul>
+      {users.map((u) => <li key={u.id}>{u.name}</li>)}
+    </ul>
+  )
+}
+
+
+//--------------------------------HOOK USEREF-------------
+
+function ChampFocus() {
+  const inputRef = useRef(null);
 
   return (
     <>
-      <p>Type in the input field:</p>
-      <input type='text'
-        value={inputValue}
-        onChange={(e) => setInputvalue(e.target.value)} />
-      <h1>Render count: {count.current}</h1>
+      <input ref={inputRef} />
+      <button onClick={() => inputRef.current.focus()}>Cliquer pour ecrire</button>
     </>
+  );
+
+}
+
+
+//--------------------------- HOOK USECONTEXT-----------------
+
+//Creer le contexte
+const ThemeContext = createContext("clair");
+
+//Le fournir en haut de l'arbre
+function Apps() {
+  const [theme, setTheme] = useState('clair');
+
+  return (
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      <Page />
+    </ThemeContext.Provider>
   );
 }
 
-function Formulaire() {
-  const champ = useRef(null);
+//Page ne recoit rien en props
+function Page() {
+  return <Bouton />;
+}
+
+//Le lire n'importe ou en dessous
+function Bouton() {
+  const { theme, setTheme } = useContext(ThemeContext);
 
   return (
-    <>
-      <input ref={champ} />
-      <button onClick={() => champ.current}>
-        Mettre le focus
+    <button onClick={() => setTheme(theme === 'clair' ? 'sombre' : 'clair')}> Theme actuel: {theme}</button>
+  );
+}
+
+
+//--------------------HOOK USEREDUCER---------------------
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'augmenter':
+      return { compteur: state.compteur + 1 };
+    case 'diminuer':
+      return { compteur: state.compteur - 1 };
+    case 'reset':
+      return { compteur: 0 };
+    default:
+      return state;
+  }
+}
+
+function CompteurUseReducer() {
+  const [state, dispatch] = useReducer(reducer, { compteur: 0 });
+
+  return (
+    <div>
+      <p>{state.compteur}</p>
+      <button onClick={() => dispatch({ type: 'augmenter' })}> + </button>
+      <button onClick={() => dispatch({ type: 'diminuer' })}> - </button>
+      <button onClick={() => dispatch({ type: 'reset' })}> Reset </button>
+    </div>
+  );
+
+}
+//dispacth : envoie juste les ordres comme augmenter, diminuer, etc
+//reducer: voila ce que je fais pour chaque ordre
+
+
+
+// Exemple ple realiste, une to-do list
+function reducer1(taches, action) {
+  switch (action.type) {
+    case 'ajouter':
+      return [...taches, { id: Date.now(), texte: action.texte, fait: false }];
+    case 'basculer':
+      return taches.map((t) => t.id === action.id ? { ...t, fait: !t.fait } : t);
+    case 'supprimer':
+      return taches.filter((t) => t.id !== action.id);
+    default:
+      return taches;
+  }
+}
+
+
+//---------------------HOOK USEMEMO------------------
+
+function Liste({ produits }) {
+  const [recherche, setRecherche] = useState("");
+  const [compteur, setCompteur] = useState(0);
+
+  const resultats = useMemo(() => {
+    console.log("Calcul en cours...");
+    return produits.filter((p) => p.nom.includes(recherche));
+  }, [produits, recherche]); // recalcule seulement si l'un des deux change
+
+  return (
+    <div>
+      <input value={recherche} onChange={(e) => setRecherche(e.target.value)} />
+      <button onClick={() => setCompteur(compteur + 1)}>
+        Clics : {compteur}
       </button>
-    </>
+      <ul>
+        {resultats.map((p) => <li key={p.id}>{p.nom}</li>)}
+      </ul>
+    </div>
   );
 }
 
-//Introduction a useCallback
+/*Quand on clique sur le bouton, compteur  change et le composant se reaffiche
+mais le filtre n'est pas recalcule car produits et recherche n'ont pas bouge */
 
-//example sans le useCallback
-// Child component that receives a function prop
-const Button = React.memo(({ onClick, text }) => {
-  alert(`Child ${text} button rendered`);
-  return <button onClick={onClick}>{text}</button>;
+
+//----------------------------HOOK USECALLBACK------------------
+
+const Enfant = memo(function Enfant({ onClick }) {
+  console.log("Enfant affiché");
+  return <button onClick={onClick}>Dire bonjour</button>;
 });
 
-// Parent component without useCallback
-function WithoutCallbackExample() {
-  const [count1, setCount1] = useState(0);
-  const [count2, setCount2] = useState(0);
+function Parent() {
+  const [compteur, setCompteur] = useState(0);
 
-  // This function is recreated on every render
-  const handleClick1 = () => {
-    setCount1(count1 + 1);
-  };
+  const direBonjour = useCallback(() => {
+    console.log("Bonjour");
+  }, []); // la fonction reste la même
 
-  const handleClick2 = () => {
-    setCount2(count2 + 1);
-  };
-
-  alert("Parent rendered");
   return (
     <div>
-      <h2>Without useCallback:</h2>
-      <p>Count 1: {count1}</p>
-      <p>Count 2: {count2}</p>
-      <button onClick={handleClick1} text="Button 1" />
-      <button onClick={handleClick2} text="Button 2" />
+      <button onClick={() => setCompteur(compteur + 1)}>
+        Parent : {compteur}
+      </button>
+      <Enfant onClick={direBonjour} />
     </div>
   );
 }
-
-//example avec le useCallback
-// Child component that receives a function prop
-const button = React.memo(({ onClick, text }) => {
-  console.log(`${text} button rendered`);
-  return <button onClick={onClick}>{text}</button>;
-});
-
-// Parent component with useCallback
-function WithCallbackExample() {
-  const [count1, setCount1] = useState(0);
-  const [count2, setCount2] = useState(0);
-
-  // These functions are memoized and only recreated when dependencies change
-  const handleClick1 = useCallback(() => {
-    setCount1(count1 + 1);
-  }, [count1]);
-
-  const handleClick2 = useCallback(() => {
-    setCount2(count2 + 1);
-  }, [count2]);
-
-  console.log("Parent rendered");
-  return (
-    <div>
-      <h2>With useCallback:</h2>
-      <p>Count 1: {count1}</p>
-      <p>Count 2: {count2}</p>
-      <Button onClick={handleClick1} text="Button 1" />
-      <Button onClick={handleClick2} text="Button 2" />
-    </div>
-  );
-}
-
-
-// Introduction a useMemo
-
-//Exemple sans useMemo
-const Application = () => {
-  const [count, setCount] = useState(0);
-  const [todos, setTodos] = useState([]);
-  const calculation = expensiveCalculation(count);
-
-  const increment = () => {
-    setCount((c) => c + 1);
-  };
-  const addTodo = () => {
-    setTodos((t) => [...t, "New Todo"]);
-  };
-
-  return (
-    <div>
-      <div>
-        <h2>My Todos</h2>
-        {todos.map((todo, index) => {
-          return <p key={index}>{todo}</p>;
-        })}
-        <button onClick={addTodo}>Add Todo</button>
-      </div>
-      <hr />
-      <div>
-        Count: {count}
-        <button onClick={increment}>+</button>
-        <h2>Expensive Calculation</h2>
-        {calculation}
-        <p>Note that this example executes the expensive function also when you click on the Add Todo button.</p>
-      </div>
-    </div>
-  );
-};
-
-const expensiveCalculation = (num) => {
-  console.log("Calculating...");
-  for (let i = 0; i < 1000000000; i++) {
-    num += 1;
-  }
-  return num;
-};
-
-
-// Exemple avec useMemo
-const ApplicationUseMemo = () => {
-  const [count, setCount] = useState(0);
-  const [todos, setTodos] = useState([]);
-  const calculation = useMemo(() => expensiveCalculation(count), [count]);
-
-  const increment = () => {
-    setCount((c) => c + 1);
-  };
-  const addTodo = () => {
-    setTodos((t) => [...t, "New Todo"]);
-  };
-
-  return (
-    <div>
-      <div>
-        <h2>My Todos</h2>
-        {todos.map((todo, index) => {
-          return <p key={index}>{todo}</p>;
-        })}
-        <button onClick={addTodo}>Add Todo</button>
-      </div>
-      <hr />
-      <div>
-        Count: {count}
-        <button onClick={increment}>+</button>
-        <h2>Expensive Calculation</h2>
-        {calculation}
-      </div>
-    </div>
-  );
-};
-
-const expensiveCalculationUseMemo = (num) => {
-  console.log("Calculating...");
-  for (let i = 0; i < 1000000000; i++) {
-    num += 1;
-  }
-  return num;
-};
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Apps />
-    <Formulaire />
-    <WithoutCallbackExample />
-    <WithCallbackExample />
-    <Application />
-    <ApplicationUseMemo />
+    <Compteur />
+    <CompteurUseState />
+    <Bonjour />
+    <Titre />
+    <ListeUsers />
+    <ChampFocus />
+    <CompteurUseReducer />
+    < Parent />
   </React.StrictMode>
 );
 
